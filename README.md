@@ -6,18 +6,18 @@ The goal of this project is to evaluate the messy probability of a given room pi
 # Install
 Require Python3 environment, need to install the following dependencies:
 
-**PIL**
+**PIL**    
 pip install pillow
 
-**Numpy**
+**Numpy**    
 pip install numpy
 
-**Pytorch**
+**Pytorch**     
 pip install torch
 
-**Pytorch**
-pip install torch
+**Pytorch**    
+pip install torch     
 pip install torchvision
 
-**Sklearn**
+**Sklearn**     
 pip install skleran
