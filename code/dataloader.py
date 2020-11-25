@@ -1,13 +1,16 @@
 import os
 from PIL import Image 
 import numpy as np
-
+import torchvision.transforms as transforms
+import torch
 def imagetoarray(path):
+    trans=transforms.Compose([transforms.ToTensor()])
     result = list()
     for name in os.listdir(path):
         filepath = path + '/' + name
-        image = Image.open(filepath) 
-        image_arr = np.array(image) 
+        image = Image.open(filepath)
+        image_arr = trans(image) 
+        image_arr = image_arr.numpy()
         result.append(image_arr)
     result = np.array(result)
     return result
