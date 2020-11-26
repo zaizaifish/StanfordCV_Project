@@ -2,14 +2,22 @@ from sklearn import svm
 import time
 import numpy as np
 
-def SVM(x_train, y_train, x_test):
-    
+def SVM(train, val, test):
     # reshape input for svm
+    x_train = list()
+    y_train = list()
+    for data in train:
+        image = data[0]
+        label = data[1]
+        x_train.append(image)
+        y_train.append(label)
+    x_train = np.array(x_train)
+    y_train = np.array(y_train)
     x_train = x_train.reshape(x_train.shape[0],-1)
     
-    y_train = y_train.ravel()
+    #y_train = y_train.ravel()
     
-    x_test = x_test.reshape(x_test.shape[0],-1)
+    test = test.reshape(test.shape[0],-1)
     
     # set parameters
     kernel = 'poly' # radical basis function
@@ -22,9 +30,7 @@ def SVM(x_train, y_train, x_test):
     start_time = time.time()
     model.fit(x_train, y_train)
     training_time = time.time()-start_time
-    
+    print("Training time: {}".format(training_time))
     # test
-    y_train_pred = model.predict(x_train)
-    y_test_pred = model.predict(x_test)
-    
-    return [y_train_pred, y_test_pred, training_time]
+    y_test_pred = model.predict(test)
+    return y_test_pred
