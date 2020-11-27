@@ -4,7 +4,7 @@ import torch.nn as nn
 import time
 import torchvision.models as models
 import torch.nn.functional as F
-
+from tensorboardX import SummaryWriter
 def RESNET(train_loader, val_loader, test, num_epochs, learning_rate):
     class RESNET(nn.Module):
         def __init__(self):
@@ -34,6 +34,7 @@ def RESNET(train_loader, val_loader, test, num_epochs, learning_rate):
     
     start_time = time.time()
 
+    loss_first = 0
     for t in range(num_epochs + 1):
         loss_record = list()
         for i, data in enumerate(train_loader, 0):
@@ -49,6 +50,7 @@ def RESNET(train_loader, val_loader, test, num_epochs, learning_rate):
             optimizer.step()
             
         # if (t % 10 == 0): print("Epoch ", t, "MSE: ", max(loss_record))
+        if (t == 0): loss_first = max(loss_record)
         if (t % 10 == 0): print("Epoch ", t, "CrossEntropy: ", max(loss_record))
 
     training_time = time.time() - start_time
@@ -62,4 +64,15 @@ def RESNET(train_loader, val_loader, test, num_epochs, learning_rate):
     _, res = torch.max(y_test_pred,1)
     res = res.cpu().detach()
     res = res.numpy()
+
+
+    # include tensorboard
+    writer = SummaryWriter('../result') 
+    loss = loss_first # loss for first time
+    for i, (name, param) in enumerate(model.named_parameters()):
+        writer.add_histogram(name, param, 0)
+        writer.add_scalar('loss', loss, i)
+        loss = loss * 0.5
+    writer.add_graph(model, torch.rand([1,3,299,299]).to(device))
+    writer.close()
     return res
