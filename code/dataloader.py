@@ -5,7 +5,7 @@ import torchvision.transforms as transforms
 import torch
 from torch.utils.data import Dataset, DataLoader
 def imagetoarray(path, label):
-    trans=transforms.Compose([transforms.ToTensor()])
+    trans=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     result = list()
     for name in os.listdir(path):
         filepath = path + '/' + name
@@ -16,7 +16,7 @@ def imagetoarray(path, label):
     return result
 
 def imagetoarray2(path):
-    trans=transforms.Compose([transforms.ToTensor()])
+    trans=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
     result = list()
     for name in os.listdir(path):
         filepath = path + '/' + name
@@ -63,10 +63,10 @@ def load(train, val, batch_size, repeat, shuffle):
             # 2. Preprocess the data (e.g. torchvision.Transform).
             # 3. Return a data pair (e.g. image and label).
             image = self.train[index][0]
-            # label = np.array([self.train[index][1]])
-            label = self.train[index][1]
-            if (label == 0): label = np.array([1,0])
-            else: label = np.array([0,1])
+            label = np.array([self.train[index][1]])
+            # label = self.train[index][1]
+            # if (label == 0): label = np.array([0.9,0.1])
+            # else: label = np.array([0.1,0.9])
             return image, label
 
         def __len__(self):

@@ -5,29 +5,32 @@ import time
 import torchvision.models as models
 import torch.nn.functional as F
 
-def RESNET(train_loader, val_loader, test, num_epochs):
+def RESNET(train_loader, val_loader, test, num_epochs, learning_rate):
     class RESNET(nn.Module):
         def __init__(self):
             super(RESNET, self).__init__()
-            
-            self.resnet = models.resnet18(pretrained=False)
+            self.norm = nn.BatchNorm2d(num_features=3,affine=True)
+            self.resnet = models.resnet18(pretrained=True)
 
-            self.fc1 = nn.Linear(1000, 32)
+            self.fc1 = nn.Linear(in_features=1000, out_features=32)
             self.fc2 = nn.Linear(in_features=32, out_features=16)
             self.fc3 = nn.Linear(in_features=16, out_features=2)
 
         def forward(self, x):
+            x = self.norm(x)
             x = self.resnet(x)
             x = F.relu(self.fc1(x))
             x = F.relu(self.fc2(x))
-            x = F.softmax(self.fc3(x), dim = -1)
+            x = F.softmax(self.fc3(x), dim = 1)
+            # x = self.fc3(x)
             return x
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print('Device: ', device)
     model = RESNET().to(device)
-    criterion = torch.nn.MSELoss(reduction='mean')
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+    # criterion = torch.nn.MSELoss(reduction='mean')
+    criterion = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     
     start_time = time.time()
 
@@ -37,14 +40,16 @@ def RESNET(train_loader, val_loader, test, num_epochs):
             inputs, labels = data
             inputs = inputs.to(device)
             labels = labels.to(device)
-            outputs = model(inputs)                                
-            loss = criterion(outputs.float(), labels.float())
+            outputs = model(inputs)        
+            labels = labels.squeeze()                    
+            loss = criterion(outputs, labels.long())
             loss_record.append(loss.item()) 
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             
-        print("Epoch ", t, "MSE: ", max(loss_record))
+        # if (t % 10 == 0): print("Epoch ", t, "MSE: ", max(loss_record))
+        if (t % 10 == 0): print("Epoch ", t, "CrossEntropy: ", max(loss_record))
 
     training_time = time.time() - start_time
     print("Training time: {}".format(training_time))
