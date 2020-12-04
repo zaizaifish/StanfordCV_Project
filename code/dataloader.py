@@ -5,7 +5,7 @@ import torchvision.transforms as transforms
 import torch
 from torch.utils.data import Dataset, DataLoader
 def imagetoarray(path, label):
-    trans=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    trans=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
     result = list()
     for name in os.listdir(path):
         filepath = path + '/' + name
@@ -16,7 +16,7 @@ def imagetoarray(path, label):
     return result
 
 def imagetoarray2(path):
-    trans=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
+    trans=transforms.Compose([transforms.ToTensor(),transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
     result = list()
     for name in os.listdir(path):
         filepath = path + '/' + name

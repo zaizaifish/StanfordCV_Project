@@ -1,0 +1,21 @@
+batch_size = 10
+repeat = 1
+shuffle = True
+num_epochs = 10
+learning_rate = 0.001
+Device:  cuda
+Epoch  0 CrossEntropy:  1.0499621629714966
+Epoch  10 CrossEntropy:  0.41089028120040894
+Training time: 4.2881293296813965
+Test Prob: tensor([[1.3393e-03, 9.9866e-01],
+        [9.9437e-01, 5.6297e-03],
+        [5.2131e-03, 9.9479e-01],
+        [1.9273e-01, 8.0727e-01],
+        [3.8652e-02, 9.6135e-01],
+        [7.5680e-02, 9.2432e-01],
+        [9.9999e-01, 1.2187e-05],
+        [7.6671e-01, 2.3329e-01],
+        [9.6782e-01, 3.2175e-02],
+        [9.9996e-01, 3.5226e-05]], device='cuda:0', grad_fn=<SoftmaxBackward>)
+Test Result: [1 0 1 1 1 1 0 0 0 0]
+Accuracy Result: 0.6
